@@ -11,11 +11,11 @@ var trackerId = 'UA-21222559-1';
         q = window.location.search.substring(1);
 
     while (e = r.exec(q)) {
-       urlParams[0] = d(e[1]);
+        urlParams[0] = d(e[1]);
     }
 })();
 
-$(document).ready(function() {
+$(document).ready(function () {
     try {
         if (urlParams[0] !== undefined) {
             username = urlParams[0];
@@ -33,31 +33,31 @@ $(document).ready(function() {
     }
 });
 
-var error = function() {
+var error = function () {
     $.ajax({
         url: 'views/error.html',
         dataType: 'html',
-        success: function(data) {
+        success: function (data) {
             $('#resume').html(data);
         }
     });
 };
 
-var home = function() {
+var home = function () {
     $.ajax({
         url: 'views/index.html',
         dataType: 'html',
-        success: function(data) {
+        success: function (data) {
             $('#resume').html(data);
         }
     });
 };
 
-var github_user = function(callback) {
+var github_user = function (callback) {
     $.getJSON(userAPIUrl + '?callback=?', callback);
 };
 
-var github_user_repos = function(username, callback, page_number, prev_data) {
+var github_user_repos = function (username, callback, page_number, prev_data) {
     var page = (page_number ? page_number : 1),
         url = userAPIUrl + '/repos?type=all&per_page=100&callback=?',
         data = (prev_data ? prev_data : []);
@@ -65,7 +65,7 @@ var github_user_repos = function(username, callback, page_number, prev_data) {
     if (page_number > 1) {
         url += '&page=' + page_number;
     }
-    $.getJSON(url, function(repos) {
+    $.getJSON(url, function (repos) {
         data = data.concat(repos.data);
         if (repos.data.length === 100) {
             github_user_repos(username, callback, page + 1, data);
@@ -75,16 +75,16 @@ var github_user_repos = function(username, callback, page_number, prev_data) {
     });
 };
 
-var github_user_issues = function(username, callback, page_number, prev_data) {
+var github_user_issues = function (username, callback, page_number, prev_data) {
     var page = (page_number ? page_number : 1),
         url = 'https://api.github.com/search/issues?q=type:pr+is:merged+author:' + username + '&per_page=100&callback=?'
-        data = (prev_data ? prev_data : []);
+    data = (prev_data ? prev_data : []);
 
     if (page_number > 1) {
         url += '&page=' + page_number;
     };
 
-    $.getJSON(url, function(repos) {
+    $.getJSON(url, function (repos) {
         data = data.concat(repos.data.items);
         if (repos.data.total_count === 100) {
             github_user_issues(username, callback, page + 1, data);
@@ -94,15 +94,15 @@ var github_user_issues = function(username, callback, page_number, prev_data) {
     });
 };
 
-var github_user_orgs = function(callback) {
+var github_user_orgs = function (callback) {
     $.getJSON(userAPIUrl + '/orgs?callback=?', callback);
 };
 
-var github_user_starred_resume = function() {
+var github_user_starred_resume = function () {
     return true;
 }
 
-var run = function() {
+var run = function () {
     var itemCount = 0,
         maxItems = 5,
         maxLanguages = 9,
@@ -113,7 +113,7 @@ var run = function() {
             $.ajax({
                 url: 'views/api_limit.html',
                 dataType: 'html',
-                success: function(data) {
+                success: function (data) {
                     $('#resume').html(data);
                 }
             });
@@ -121,7 +121,7 @@ var run = function() {
             $.ajax({
                 url: 'views/not_found.html',
                 dataType: 'html',
-                success: function(data) {
+                success: function (data) {
                     $('#resume').html(data);
                 }
             });
@@ -129,7 +129,7 @@ var run = function() {
             $.ajax({
                 url: 'views/opt_out.html',
                 dataType: 'html',
-                success: function(data) {
+                success: function (data) {
                     $('#resume').html(data);
                 }
             });
@@ -137,7 +137,7 @@ var run = function() {
         return;
     };
 
-    var result = github_user(function(data) {
+    var result = github_user(function (data) {
         data = data.data;
         var sinceDate = new Date(data.created_at);
         var sinceMonth = sinceDate.getMonth();
@@ -145,12 +145,12 @@ var run = function() {
         var sinceMonth = sinceDate.getMonth();
         var currentYear = (new Date).getFullYear();
         switch (since) {
-          case currentYear-1:
-            since = 'last year';
-            break;
-          case currentYear:
-            since = 'this year';
-            break;
+            case currentYear - 1:
+                since = 'last year';
+                break;
+            case currentYear:
+                since = 'this year';
+                break;
         };
 
         var addHttp = '';
@@ -167,10 +167,10 @@ var run = function() {
         };
 
         var avatar = '';
-        if (data.type === 'Organization'){
+        if (data.type === 'Organization') {
             avatar = data.avatar_url.match(/https:\/\/secure.gravatar.com\/avatar\/[0-9a-z]+/)[0];
             avatar += '?s=140&amp;d=https://github.com/images/gravatars/gravatar-140.png';
-        }else if(data.type === 'User'){
+        } else if (data.type === 'User') {
             avatar = data.avatar_url;
         };
 
@@ -212,9 +212,9 @@ var run = function() {
             var EXTRA_POINT_GAIN = 1;
 
             var statusScore = data.public_repos * COEF_REPOS
-                            + data.public_gists * COEF_GISTS
-                            + data.followers * COEF_FOLLOWERS
-                            + data.following * COEF_FOLLOWING;
+                + data.public_gists * COEF_GISTS
+                + data.followers * COEF_FOLLOWERS
+                + data.following * COEF_FOLLOWING;
 
             // Extra points
             // - Early adopter
@@ -223,26 +223,26 @@ var run = function() {
             };
             // - Blog & Email & Location
             if (view.location && view.location != '' && view.email && view.email != '' && data.blog && data.blog != '') {
-              statusScore += EXTRA_POINT_GAIN;
+                statusScore += EXTRA_POINT_GAIN;
             };
 
             if (statusScore === FIRST_STEP) {
-              return 'Inactive GitHub user';
+                return 'Inactive GitHub user';
             }
             else if (statusScore > FIRST_STEP && statusScore <= SECOND_STEP) {
-              return 'Newbie GitHub user';
+                return 'Newbie GitHub user';
             }
             else if (statusScore > SECOND_STEP && statusScore <= THIRD_STEP) {
-              return 'Regular GitHub user';
+                return 'Regular GitHub user';
             }
             else if (statusScore > THIRD_STEP && statusScore <= FOURTH_STEP) {
-              return 'Advanced GitHub user';
+                return 'Advanced GitHub user';
             }
             else if (statusScore > FOURTH_STEP && statusScore <= FIFTH_STEP) {
-              return 'Enthusiastic GitHub user';
+                return 'Enthusiastic GitHub user';
             }
             else if (statusScore > FIFTH_STEP) {
-              return 'Passionate GitHub user';
+                return 'Passionate GitHub user';
             }
         };
 
@@ -250,22 +250,22 @@ var run = function() {
             view.website = addHttp + data.blog;
         };
 
-        if (typeof(data.type) !== 'undefined') {
+        if (typeof (data.type) !== 'undefined') {
             var resume = (data.type === 'User' ? 'views/resume.html' : 'views/resumeOrgs.html');
         }
-        else{
+        else {
             return false;
         };
 
         $.ajax({
             url: resume,
             dataType: 'html',
-            success: function(data) {
+            success: function (data) {
                 var template = data,
                     html = Mustache.to_html(template, view);
                 $('#resume').html(html);
                 document.title = name + "'s Résumé";
-                $('#actions #print').click(function(){
+                $('#actions #print').click(function () {
                     window.print();
                     return false;
                 });
@@ -273,12 +273,12 @@ var run = function() {
         });
     });
 
-    github_user_repos(username, function(data) {
+    github_user_repos(username, function (data) {
         var sorted = [],
             languages = {},
             popularity;
 
-        $.each(data, function(i, repo) {
+        $.each(data, function (i, repo) {
             if (repo.fork !== false) {
                 return;
             };
@@ -292,7 +292,7 @@ var run = function() {
             };
 
             popularity = repo.watchers + repo.forks;
-            sorted.push({position: i, popularity: popularity, info: repo});
+            sorted.push({ position: i, popularity: popularity, info: repo });
         });
 
         function sortByPopularity(a, b) {
@@ -306,13 +306,13 @@ var run = function() {
             var sorted_languages = [];
 
             for (var lang in languages) {
-                if (typeof(lang) !== 'string') {
+                if (typeof (lang) !== 'string') {
                     continue;
                 }
                 sorted_languages.push({
                     name: lang,
                     popularity: languages[lang],
-                    toString: function() {
+                    toString: function () {
                         return '<a href="https://github.com/search?q=user%3A'
                             + username + '&l=' + encodeURIComponent(this.name) + '">'
                             + this.name + '</a>';
@@ -332,17 +332,17 @@ var run = function() {
         $.ajax({
             url: 'views/job.html',
             dataType: 'html',
-            success: function(response) {
+            success: function (response) {
                 languages = sortLanguages(languages, maxLanguages);
 
                 if (languages && languages.length > 0) {
                     var ul = $('<ul class="talent"></ul>'),
                         percent, li;
 
-                    $.each(languages, function(i, lang) {
+                    $.each(languages, function (i, lang) {
                         x = i + 1;
                         percent = parseInt((lang.popularity / languageTotal) * 100);
-                        li = $('<li>' + lang.toString() + ' ('+percent+'%)</li>');
+                        li = $('<li>' + lang.toString() + ' (' + percent + '%)</li>');
 
                         if (x % 3 === 0 || (languages.length < 3 && i === languages.length - 1)) {
                             li.attr('class', 'last');
@@ -363,7 +363,7 @@ var run = function() {
                     itemCount = 0;
                     var since, until, date, view, template, html;
 
-                    $.each(sorted, function(index, repo) {
+                    $.each(sorted, function (index, repo) {
                         if (itemCount >= maxItems) {
                             return;
                         }
@@ -406,30 +406,30 @@ var run = function() {
                         ++itemCount;
                     });
                 } else {
-                    if(data.length > 0){
-                      $('#jobs').html('').append('<p class="enlarge">All of this user\'s repositories seem to be forks. Sorry.</p>');
+                    if (data.length > 0) {
+                        $('#jobs').html('').append('<p class="enlarge">All of this user\'s repositories seem to be forks. Sorry.</p>');
                     } else {
-                      $('#jobs').html('').append('<p class="enlarge">Unfortunately, this user does not seem to have any <strong>public</strong> repositories.</p>');
+                        $('#jobs').html('').append('<p class="enlarge">Unfortunately, this user does not seem to have any <strong>public</strong> repositories.</p>');
                     }
                 }
             }
         });
     });
 
-    github_user_issues(username, function(data) {
+    github_user_issues(username, function (data) {
         var sorted = [],
             repos = {};
 
-        $.each(data, function(i, issue) {
-            if(repos[issue.repository_url] === undefined) {
+        $.each(data, function (i, issue) {
+            if (repos[issue.repository_url] === undefined) {
                 repos[issue.repository_url] = { popularity: 1 }
             } else {
                 repos[issue.repository_url].popularity += 1;
             }
         });
 
-        $.each(repos, function(repo, obj) {
-            sorted.push({ repo: repo, popularity: obj.popularity});
+        $.each(repos, function (repo, obj) {
+            sorted.push({ repo: repo, popularity: obj.popularity });
         });
 
         function sortByPopularity(a, b) {
@@ -441,11 +441,11 @@ var run = function() {
         $.ajax({
             url: 'views/contrib.html',
             dataType: 'html',
-            success: function(response) {
+            success: function (response) {
                 if (sorted.length > 0) {
                     $('#contrib-jobs').html('');
                     var view, template, html, repoUrl, repoName, commitsUrl;
-                    $.each(sorted, function(index, repo) {
+                    $.each(sorted, function (index, repo) {
                         repoUrl = repo.repo.replace(/https:\/\/api\.github\.com\/repos/, 'https://github.com');
                         repoName = repo.repo.replace(/https:\/\/api\.github\.com\/repos\//, '');
                         commitsUrl = repoUrl + '/commits?author=' + username;
@@ -469,20 +469,20 @@ var run = function() {
         });
     });
 
-    github_user_orgs(function(response) {
+    github_user_orgs(function (response) {
         var sorted = [];
 
-        $.each(response.data, function(i, org) {
+        $.each(response.data, function (i, org) {
             if (org.login === undefined) {
                 return;
             }
-            sorted.push({position: i, info: org});
+            sorted.push({ position: i, info: org });
         });
 
         $.ajax({
             url: 'views/org.html',
             dataType: 'html',
-            success: function(response) {
+            success: function (response) {
                 var now = new Date().getFullYear();
 
                 if (sorted.length > 0) {
@@ -490,7 +490,7 @@ var run = function() {
 
                     var name, view, template, html;
 
-                    $.each(sorted, function(index, org) {
+                    $.each(sorted, function (index, org) {
                         if (itemCount >= maxItems) {
                             return;
                         }
@@ -519,15 +519,15 @@ var run = function() {
 };
 
 if (trackerId) {
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', trackerId]);
-  _gaq.push(['_trackPageview']);
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', trackerId]);
+    _gaq.push(['_trackPageview']);
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' === document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+    (function () {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' === document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
 }
 
 $(window).bind('error', error);
